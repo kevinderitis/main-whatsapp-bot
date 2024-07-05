@@ -1,6 +1,8 @@
 import { sendContactCard, sendWhatsappMessage } from '../services/whatsappServices.js';
 import { getNextClient } from '../services/clientServices.js';
 import { getLeadByChatIdService, createLeadService, updateLeadByChatIdService } from '../services/leadServices.js';
+import { sendContactTelegram } from '../bot-telegram/telegram-bot.js';
+
 import config from '../config/config.js';
 
 export const verifyWebhook = async (req, res) => {
