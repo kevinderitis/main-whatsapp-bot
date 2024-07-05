@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { sendSlackMessage } from './slackServices.js'
 import config from '../config/config.js';
 
 export const sendWhatsappMessage = async (to, text) => {
@@ -54,5 +55,16 @@ export const sendContactCard = async (to, phone) => {
         console.log('Contact card sent:', response.data);
     } catch (error) {
         console.error('Error sending contact card:', error.response ? error.response.data : error.message);
+    }
+};
+
+export const healthCheck = async (msg) => {
+    try {
+        if(msg === '/health'){
+            await sendSlackMessage('Todo nice!');
+        }
+    } catch (error) {
+        console.error('Error sending message:', error);
+        throw error;
     }
 };

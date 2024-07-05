@@ -1,4 +1,4 @@
-import { sendContactCard, sendWhatsappMessage } from '../services/whatsappServices.js';
+import { healthCheck, sendContactCard, sendWhatsappMessage, healthCheck } from '../services/whatsappServices.js';
 import { getNextClient } from '../services/clientServices.js';
 import { getLeadByChatIdService, createLeadService, updateLeadByChatIdService } from '../services/leadServices.js';
 import { sendContactTelegram } from '../bot-telegram/telegram-bot.js';
@@ -29,9 +29,10 @@ export const processMessage = async (req, res) => {
                     if (change.field === 'messages') {
                         const message = change.value.messages && change.value.messages[0];
                         if (message) {
-                            console.log('Received message:', message);
                             console.log(`Numero de telefono: ${message.from}`)
                             console.log(`Mensaje: ${message.text.body}`)
+
+                            await healthCheck(message.text.body);
 
                             if (message.from) {
                                 let chatId = message.from;
