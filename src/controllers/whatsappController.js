@@ -1,4 +1,4 @@
-import { healthCheck, sendContactCard, sendWhatsappMessage, healthCheck } from '../services/whatsappServices.js';
+import { sendContactCard, sendWhatsappMessage, healthCheck } from '../services/whatsappServices.js';
 import { getNextClient } from '../services/clientServices.js';
 import { getLeadByChatIdService, createLeadService, updateLeadByChatIdService } from '../services/leadServices.js';
 import { sendContactTelegram } from '../bot-telegram/telegram-bot.js';
