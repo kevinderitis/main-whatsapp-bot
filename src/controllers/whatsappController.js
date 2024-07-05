@@ -1,6 +1,7 @@
 import { sendContactCard, sendWhatsappMessage } from '../services/whatsappServices.js';
 import { getNextClient } from '../services/clientServices.js';
 import { getLeadByChatIdService, createLeadService, updateLeadByChatIdService } from '../services/leadServices.js';
+import config from '../config/config.js';
 
 export const verifyWebhook = async (req, res) => {
     const mode = req.query['hub.mode'];
@@ -8,7 +9,7 @@ export const verifyWebhook = async (req, res) => {
     const challenge = req.query['hub.challenge'];
 
     if (mode && token) {
-        if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+        if (mode === 'subscribe' && token === config.WHATSAPP_VERIFY_TOKEN) {
             console.log('WEBHOOK_VERIFIED');
             res.status(200).send(challenge);
         } else {
