@@ -70,6 +70,7 @@ export const processMessage = async (req, res) => {
 
 
 export const processPendingMessages = async (req, res) => {
+    let phoneId = req.body.phoneId;
     try {
 
         let lastPendingLeads = await getLastPendingLeadsService();
@@ -78,8 +79,8 @@ export const processPendingMessages = async (req, res) => {
             let chatId = lead.chatId;
             let clientData = await getNextClient();
             let welcomeMessage = clientData.welcomeMessage;
-            await sendWhatsappMessage(chatId, welcomeMessage);
-            await sendContactCard(chatId, clientData.phoneNumber);
+            await sendWhatsappMessage(chatId, welcomeMessage, phoneId);
+            await sendContactCard(chatId, clientData.phoneNumber, phoneId);
             await updateLeadByChatIdService(chatId, 'sent', clientData.phoneNumber);
             if (clientData.telegram) {
                 await sendContactTelegram(chatId, clientData.telegram);
