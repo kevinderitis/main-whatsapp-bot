@@ -28,7 +28,7 @@ export const processMessage = async (req, res) => {
                 entry.changes.forEach(async change => {
                     if (change.field === 'messages') {
                         const message = change.value.messages && change.value.messages[0];
-                        const recipientNumber = change.value.metadata.display_phone_number || change.value.metadata.phone_number_id;
+                        const recipientNumber = change.value.metadata.phone_number_id;
                         console.log(recipientNumber);
                         if (message) {
                             console.log(`Numero de telefono: ${message.from}`)
