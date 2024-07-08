@@ -75,6 +75,7 @@ export const processPendingMessages = async (req, res) => {
         let lastPendingLeads = await getLastPendingLeadsService();
 
         for (const lead of lastPendingLeads) {
+            let chatId = lead.chatId;
             let clientData = await getNextClient();
             let welcomeMessage = clientData.welcomeMessage;
             await sendWhatsappMessage(chatId, welcomeMessage);
