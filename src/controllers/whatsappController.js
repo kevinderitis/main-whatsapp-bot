@@ -41,7 +41,7 @@ export const processMessage = async (req, res) => {
                                 if (!lead) {
                                     let newLead = await createLeadService(chatId);
                                     let clientData = await getNextClient();
-                                    let welcomeMessage = `${clientData.welcomeMessage}\n Contacto: ${chatId}`;
+                                    let welcomeMessage = `${clientData.welcomeMessage}\n Contacto: ${clientData.phoneNumber}`;
                                     await sendWhatsappMessage(chatId, welcomeMessage, recipientPhoneId);
                                     await sendContactCard(chatId, clientData.phoneNumber, recipientPhoneId);
                                     await updateLeadByChatIdService(chatId, 'sent', clientData.phoneNumber);
