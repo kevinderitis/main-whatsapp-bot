@@ -10,7 +10,7 @@ const domain = config.APP_DOMAIN;
 const bot = new TelegramBot(token, { polling: false });
 
 const limiter = new Bottleneck({
-    minTime: 1000 / 30,
+    minTime: 1000,
     maxConcurrent: 1,
 });
 
@@ -112,60 +112,60 @@ bot.on('callback_query', (callbackQuery) => {
 
 bot.setWebHook(`${domain}/telegram/webhook/${token}`);
 
-// export const sendContactTelegram = async (phoneNumber, chatId) => {
-//     const firstName = "Contacto";
-
-//     const sendContact = async () => {
-//         console.log(`Contact sent to telegram: ${chatId}`);
-//         await bot.sendContact(chatId, phoneNumber, firstName, {
-//             vcard: `BEGIN:VCARD
-//                     VERSION:3.0
-//                     FN:${firstName}
-//                     TEL;TYPE=CELL:${phoneNumber}
-//                     END:VCARD`
-//         });
-//     };
-
-//     const sendMessage = async () => {
-//         console.log(`Message sent to telegram: ${chatId}`);
-//         const whatsappLink = `https://api.whatsapp.com/send/?phone=${phoneNumber}`;
-//         const messageText = `Hablar por whatsapp: [Contactar](${whatsappLink})`;
-//         await bot.sendMessage(chatId, messageText, { parse_mode: 'Markdown' });
-//     };
-
-//     try {
-//         await limiter.schedule(sendContact);
-//         await limiter.schedule(sendMessage);
-//     } catch (error) {
-//         console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.description);
-//         if (error.response && error.response.statusCode === 429) {
-//             const retryAfter = parseInt(error.response.body.parameters.retry_after, 10) || 1;
-//             console.log(`Retrying after ${retryAfter} seconds`);
-//             setTimeout(() => sendContactTelegram(phoneNumber, chatId), retryAfter * 1000);
-//         }
-//     }
-// };
-
-export const sendContactTelegram = (phoneNumber, chatId) => {
+export const sendContactTelegram = async (phoneNumber, chatId) => {
     const firstName = "Contacto";
 
-    bot.sendContact(chatId, phoneNumber, firstName, {
-        vcard: `BEGIN:VCARD
-                VERSION:3.0
-                FN:${firstName}
-                TEL;TYPE=CELL:${phoneNumber}
-                END:VCARD`
-    });
+    const sendContact = async () => {
+        console.log(`Contact sent to telegram: ${chatId}`);
+        await bot.sendContact(chatId, phoneNumber, firstName, {
+            vcard: `BEGIN:VCARD
+                    VERSION:3.0
+                    FN:${firstName}
+                    TEL;TYPE=CELL:${phoneNumber}
+                    END:VCARD`
+        });
+    };
 
-    setTimeout(() => {
+    const sendMessage = async () => {
+        console.log(`Message sent to telegram: ${chatId}`);
         const whatsappLink = `https://api.whatsapp.com/send/?phone=${phoneNumber}`;
         const messageText = `Hablar por whatsapp: [Contactar](${whatsappLink})`;
+        await bot.sendMessage(chatId, messageText, { parse_mode: 'Markdown' });
+    };
 
-        bot.sendMessage(chatId, messageText, { parse_mode: 'Markdown' }).catch((error) => {
-            console.error('Error al enviar el enlace de WhatsApp:', error);
-        });
-    }, 2000); 
+    try {
+        await limiter.schedule(sendContact);
+        await limiter.schedule(sendMessage);
+    } catch (error) {
+        console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.description);
+        if (error.response && error.response.statusCode === 429) {
+            const retryAfter = parseInt(error.response.body.parameters.retry_after, 10) || 1;
+            console.log(`Retrying after ${retryAfter} seconds`);
+            setTimeout(() => sendContactTelegram(phoneNumber, chatId), retryAfter * 1000);
+        }
+    }
 };
+
+// export const sendContactTelegram = (phoneNumber, chatId) => {
+//     const firstName = "Contacto";
+
+//     bot.sendContact(chatId, phoneNumber, firstName, {
+//         vcard: `BEGIN:VCARD
+//                 VERSION:3.0
+//                 FN:${firstName}
+//                 TEL;TYPE=CELL:${phoneNumber}
+//                 END:VCARD`
+//     });
+
+//     setTimeout(() => {
+//         const whatsappLink = `https://api.whatsapp.com/send/?phone=${phoneNumber}`;
+//         const messageText = `Hablar por whatsapp: [Contactar](${whatsappLink})`;
+
+//         bot.sendMessage(chatId, messageText, { parse_mode: 'Markdown' }).catch((error) => {
+//             console.error('Error al enviar el enlace de WhatsApp:', error);
+//         });
+//     }, 2000); 
+// };
 
 
 export { bot };
