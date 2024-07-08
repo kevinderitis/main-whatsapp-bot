@@ -85,7 +85,7 @@ export const processPendingMessages = async (req, res) => {
             if (clientData.telegram) {
                 await sendContactTelegram(chatId, clientData.telegram);
             }
-            console.log(`Lead ${newLead.chatId} enviado a: ${clientData.phoneNumber}`)
+            console.log(`Lead ${chatId} enviado a: ${clientData.phoneNumber}`)
 
         }
         res.status(200).send('EVENTS_SENT');
