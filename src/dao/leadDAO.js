@@ -47,6 +47,24 @@ const getAllLeads = async filter => {
   }
 };
 
+const getLastPendingLeads = async () => {
+  try {
+    const now = new Date();
+    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    let query = {
+      createdAt: { $gte: twentyFourHoursAgo },
+      status: 'pending'
+    };
+    const filteredLeads = await Lead.find(query).sort({ createdAt: -1 });
+
+    return filteredLeads;
+  } catch (error) {
+    console.error('Error al obtener leads:', error.message);
+    throw new Error('No se pudieron obtener los leads');
+  }
+};
+
 const getLeadById = async (leadId) => {
   try {
     const lead = await Lead.findById(leadId);
@@ -200,4 +218,4 @@ const updateManyPayments = async hour => {
   }
 };
 
-export { createLead, getAllLeads, getLeadById, updateLeadById, deleteLeadById, getLeadByChatId, updateLeadPaymentByChatId, updateLeadByMainThreadId, updateManyPayments, updateLeadStatusByChatId, updateLeadByChatId };
+export { createLead, getAllLeads, getLeadById, updateLeadById, deleteLeadById, getLeadByChatId, updateLeadPaymentByChatId, updateLeadByMainThreadId, updateManyPayments, updateLeadStatusByChatId, updateLeadByChatId, getLastPendingLeads };

@@ -1,6 +1,6 @@
 import { sendContactCard, sendWhatsappMessage, healthCheck } from '../services/whatsappServices.js';
 import { getNextClient } from '../services/clientServices.js';
-import { getLeadByChatIdService, createLeadService, updateLeadByChatIdService } from '../services/leadServices.js';
+import { getLeadByChatIdService, createLeadService, updateLeadByChatIdService, getLastPendingLeadsService } from '../services/leadServices.js';
 import { sendContactTelegram } from '../bot-telegram/telegram-bot.js';
 
 import config from '../config/config.js';
@@ -28,6 +28,8 @@ export const processMessage = async (req, res) => {
                 entry.changes.forEach(async change => {
                     if (change.field === 'messages') {
                         const message = change.value.messages && change.value.messages[0];
+                        const recipientNumber = change.value.metadata.display_phone_number || change.value.metadata.phone_number_id;
+                        console.log(recipientNumber);
                         if (message) {
                             console.log(`Numero de telefono: ${message.from}`)
                             console.log(`Mensaje: ${message.text.body}`)
@@ -45,7 +47,7 @@ export const processMessage = async (req, res) => {
                                     await sendContactCard(chatId, clientData.phoneNumber);
                                     await updateLeadByChatIdService(chatId, 'sent', clientData.phoneNumber);
                                     if (clientData.telegram) {
-                                       await sendContactTelegram(chatId, clientData.telegram);
+                                        await sendContactTelegram(chatId, clientData.telegram);
                                     }
                                     console.log(`Lead ${newLead.chatId} enviado a: ${clientData.phoneNumber}`)
                                 }
@@ -60,6 +62,33 @@ export const processMessage = async (req, res) => {
         } else {
             res.sendStatus(404);
         }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+
+}
+
+
+export const processPendingMessages = async (req, res) => {
+    try {
+
+        let lastPendingLeads = await getLastPendingLeadsService();
+
+        for (const lead of lastPendingLeads) {
+            let clientData = await getNextClient();
+            let welcomeMessage = clientData.welcomeMessage;
+            await sendWhatsappMessage(chatId, welcomeMessage);
+            await sendContactCard(chatId, clientData.phoneNumber);
+            await updateLeadByChatIdService(chatId, 'sent', clientData.phoneNumber);
+            if (clientData.telegram) {
+                await sendContactTelegram(chatId, clientData.telegram);
+            }
+            console.log(`Lead ${newLead.chatId} enviado a: ${clientData.phoneNumber}`)
+
+        }
+        res.status(200).send('EVENTS_SENT');
+
     } catch (error) {
         console.log(error);
         res.status(500).send(error);

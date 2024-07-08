@@ -1,4 +1,4 @@
-import { getLeadByChatId, createLead, getAllLeads, updateLeadByChatId } from "../dao/leadDAO.js";
+import { getLeadByChatId, createLead, getAllLeads, updateLeadByChatId, getLastPendingLeads } from "../dao/leadDAO.js";
 import { getNextClient } from "./clientServices.js";
 
 
@@ -53,6 +53,15 @@ export const createLeadService = async (chatId, clientPhone) => {
 export const getLeads = async filter => {
     try {
         let leads = await getAllLeads(filter);
+        return leads;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getLastPendingLeadsService = async () => {
+    try {
+        let leads = await getLastPendingLeads();
         return leads;
     } catch (error) {
         throw error;
