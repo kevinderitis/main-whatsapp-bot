@@ -2,9 +2,9 @@ import axios from 'axios';
 import { sendSlackMessage } from './slackServices.js'
 import config from '../config/config.js';
 
-export const sendWhatsappMessage = async (to, text) => {
+export const sendWhatsappMessage = async (to, text, phoneId) => {
     try {
-        const response = await axios.post(`${config.WHATSAPP_API_URL}/messages`, {
+        const response = await axios.post(`${config.WHATSAPP_API_URL}/${phoneId}/messages`, {
             messaging_product: 'whatsapp',
             to: to,
             text: { body: text }
@@ -21,7 +21,7 @@ export const sendWhatsappMessage = async (to, text) => {
     }
 };
 
-export const sendContactCard = async (to, phone) => {
+export const sendContactCard = async (to, phone, phoneId) => {
     let contact = {
         "name": {
             "first_name": "Contacto",
@@ -38,7 +38,7 @@ export const sendContactCard = async (to, phone) => {
 
     try {
         const response = await axios.post(
-            `${config.WHATSAPP_API_URL}/messages`,
+            `${config.WHATSAPP_API_URL}/${phoneId}/messages`,
             {
                 messaging_product: 'whatsapp',
                 to: to,

@@ -28,8 +28,7 @@ export const processMessage = async (req, res) => {
                 entry.changes.forEach(async change => {
                     if (change.field === 'messages') {
                         const message = change.value.messages && change.value.messages[0];
-                        const recipientNumber = change.value.metadata.phone_number_id;
-                        console.log(recipientNumber);
+                        const recipientPhoneId = change.value.metadata.phone_number_id;
                         if (message) {
                             console.log(`Numero de telefono: ${message.from}`)
                             console.log(`Mensaje: ${message.text.body}`)
@@ -43,8 +42,8 @@ export const processMessage = async (req, res) => {
                                     let newLead = await createLeadService(chatId);
                                     let clientData = await getNextClient();
                                     let welcomeMessage = clientData.welcomeMessage;
-                                    await sendWhatsappMessage(chatId, welcomeMessage);
-                                    await sendContactCard(chatId, clientData.phoneNumber);
+                                    await sendWhatsappMessage(chatId, welcomeMessage, recipientPhoneId);
+                                    await sendContactCard(chatId, clientData.phoneNumber, recipientPhoneId);
                                     await updateLeadByChatIdService(chatId, 'sent', clientData.phoneNumber);
                                     if (clientData.telegram) {
                                         await sendContactTelegram(chatId, clientData.telegram);
