@@ -22,21 +22,16 @@ export const sendWhatsappMessage = async (to, text, phoneId) => {
 };
 
 export const sendContactCard = async (to, phone, phoneId) => {
-    const contact = {
-        messaging_product: 'whatsapp',
-        to: to,
-        type: 'contacts',
-        contacts: [
+    let contact = {
+        "name": {
+            "first_name": "Contacto",
+            "last_name": "Cajero",
+            "formatted_name": "Contacto"
+        },
+        "phones": [
             {
-                phones: [
-                    {
-                        phone: phone,
-                        type: 'CELL'
-                    }
-                ],
-                name: {
-                    formatted_name: 'Contacto'
-                }
+                "phone": phone,
+                "type": "CELL"
             }
         ]
     };
@@ -65,7 +60,7 @@ export const sendContactCard = async (to, phone, phoneId) => {
 
 export const healthCheck = async (msg) => {
     try {
-        if (msg === '/health') {
+        if(msg === '/health'){
             await sendSlackMessage('Todo nice!');
         }
     } catch (error) {
