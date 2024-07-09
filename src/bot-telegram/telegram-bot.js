@@ -130,7 +130,9 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
         console.log(`Message sent to telegram: ${chatId}`);
         const whatsappLink = `https://api.whatsapp.com/send/?phone=${phoneNumber}`;
         const messageText = `Hablar por whatsapp: [Contactar](${whatsappLink})`;
-        await bot.sendMessage(chatId, messageText, { parse_mode: 'Markdown' });
+        setTimeout(() => {
+            bot.telegram.sendMessage(chatId, messageText, { parse_mode: 'Markdown' });
+        }, 2000);
     };
 
     try {
