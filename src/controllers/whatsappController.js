@@ -30,10 +30,11 @@ export const processMessage = async (req, res) => {
                         const message = change.value.messages && change.value.messages[0];
                         const recipientPhoneId = change.value.metadata.phone_number_id;
                         if (message) {
+                            let textMessage = message.text?.body || '';
                             console.log(`Numero de telefono: ${message.from}`)
-                            console.log(`Mensaje: ${message.text.body}`)
+                            console.log(`Mensaje: ${textMessage}`)
 
-                            await healthCheck(message.text.body);
+                            await healthCheck(textMessage);
 
                             if (message.from) {
                                 let chatId = message.from;
@@ -44,7 +45,7 @@ export const processMessage = async (req, res) => {
                                     let welcomeMessage = `${clientData.welcomeMessage}\n Contacto: ${clientData.phoneNumber}`;
                                     await sendWhatsappMessage(chatId, welcomeMessage, recipientPhoneId);
                                     await sendContactCard(chatId, clientData.phoneNumber, recipientPhoneId);
-                                    await updateLeadByChatIdService(chatId, 'sent', clientData.phoneNumber);
+                                    await updateLeadByChatIdService(chatId, 'processing', clientData.phoneNumber);
                                     if (clientData.telegram) {
                                         await sendContactTelegram(chatId, clientData.telegram);
                                     }

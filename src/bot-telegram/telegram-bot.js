@@ -2,6 +2,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import config from '../config/config.js';
 import Bottleneck from 'bottleneck';
 import { setTelegramChatId, updateClientPhone, changeOrderState, getClientInfo } from '../services/clientServices.js';
+import { updateLeadByChatIdService } from '../services/leadServices.js';
 
 const token = config.API_KEY_TELEGRAM;
 
@@ -116,22 +117,34 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
     const firstName = "Contacto";
 
     const sendContact = async () => {
-        console.log(`Contact sent to telegram: ${chatId}`);
-        await bot.sendContact(chatId, phoneNumber, firstName, {
-            vcard: `BEGIN:VCARD
-                    VERSION:3.0
-                    FN:${firstName}
-                    TEL;TYPE=CELL:${phoneNumber}
-                    END:VCARD`
-        });
+        try {
+            await bot.sendContact(chatId, phoneNumber, firstName, {
+                vcard: `BEGIN:VCARD
+                        VERSION:3.0
+                        FN:${firstName}
+                        TEL;TYPE=CELL:${phoneNumber}
+                        END:VCARD`
+            });
+            console.log(`Contact sent to telegram: ${chatId}`);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+
     };
 
     const sendMessage = async () => {
-        console.log(`Message sent to telegram: ${chatId}`);
-        const whatsappLink = `https://api.whatsapp.com/send/?phone=${phoneNumber}`;
-        const messageText = `Hablar por whatsapp: [Contactar](${whatsappLink})`;
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        await bot.sendMessage(chatId, messageText, { parse_mode: 'Markdown' });
+        try {
+            const whatsappLink = `https://api.whatsapp.com/send/?phone=${phoneNumber}`;
+            const messageText = `Hablar por whatsapp: [Contactar](${whatsappLink})`;
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await bot.sendMessage(chatId, messageText, { parse_mode: 'Markdown' });
+            await updateLeadByChatIdService(phoneNumber, 'sent');
+            console.log(`Message sent to telegram: ${chatId}`);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     };
 
     try {

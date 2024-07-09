@@ -23,7 +23,7 @@ const createLead = async (chatId, clientPhone) => {
         clientPhone
       });
       await newLead.save();
-      console.log('Lead creado exitosamente:', newLead);
+      console.log('Lead creado exitosamente:', chatId);
       return newLead;
     }
   } catch (error) {
@@ -82,9 +82,6 @@ const getLeadById = async (leadId) => {
 const getLeadByChatId = async (chatId) => {
   try {
     const lead = await Lead.findOne({ chatId });
-    if (!lead) {
-      console.log('Lead no encontrado');
-    }
     return lead;
   } catch (error) {
     console.error('Error al obtener lead por número de teléfono:', error.message);
@@ -156,7 +153,11 @@ const updateLeadByChatId = async (chatId, status, newClientPhone) => {
     }
 
     lead.status = status;
-    lead.clientPhone = newClientPhone;
+    
+    if(newClientPhone){
+      lead.clientPhone = newClientPhone;
+    }
+
 
     await lead.save();
 

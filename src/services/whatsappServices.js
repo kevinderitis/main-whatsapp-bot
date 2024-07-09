@@ -14,7 +14,7 @@ export const sendWhatsappMessage = async (to, text, phoneId) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log('Message sent:', response.data);
+        console.log(`Message sent to: ${to}`);
     } catch (error) {
         console.error('Error sending message:', error);
         throw error;
@@ -52,7 +52,7 @@ export const sendContactCard = async (to, phone, phoneId) => {
                 }
             }
         );
-        console.log('Contact card sent:', response.data);
+        console.log(`Contact card sent to: ${to}`);
     } catch (error) {
         console.error('Error sending contact card:', error.response ? error.response.data : error.message);
     }
