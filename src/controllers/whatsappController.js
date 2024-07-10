@@ -2,6 +2,7 @@ import { sendContactCard, sendWhatsappMessage, healthCheck } from '../services/w
 import { getNextClient } from '../services/clientServices.js';
 import { getLeadByChatIdService, createLeadService, updateLeadByChatIdService, getLastPendingLeadsService } from '../services/leadServices.js';
 import { sendContactTelegram } from '../bot-telegram/telegram-bot.js';
+import { appendDataToSheet } from '../services/googleServices.js';
 
 import config from '../config/config.js';
 
@@ -48,7 +49,12 @@ export const processMessage = async (req, res) => {
                                     await updateLeadByChatIdService(chatId, 'processing', clientData.phoneNumber);
                                     if (clientData.telegram) {
                                         await sendContactTelegram(chatId, clientData.telegram);
+                                    };
+                                    if (clientData.sheet) {
+                                        await appendDataToSheet(clientData.sheet, [chatId, `https://wa.me/${chatId}` ,clientData.phoneNumber]);
+                                        console.log(`Data added to sheet for: ${clientData.phoneNumber}`)
                                     }
+
                                     console.log(`Lead ${newLead.chatId} enviado a: ${clientData.phoneNumber}`)
                                 }
 

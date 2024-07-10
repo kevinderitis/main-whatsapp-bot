@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "vegas-marketing",
+  "private_key_id": "dfeaca688327d1342f923bc8c2a7b713589666cf",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQC2e++UeDDUlg1Z\nVZJtV+4C6WMMA4ZIenVzgieNqBqECBSsihE9bL+Swqwg57w2Bm7JfwYQsbh4DcZm\nQc2fx2M3KMb1X8O1ZAXDy3jQ9PsifPlnLLrH1Ujm4bQcR22Li84oH0Bj0dN5nuMh\nKGzVtC9B63zPNOIH2Dbq9IkW0krz/DUIiJyxHd52woeQxAZFWgvne9dFf2A8TDSA\nx/Fa7AhzcFcTJtCpYroAIsWi8mqodHaTls8deJUnJ6/2jHMJYe1jy7Lsfrg+lRDF\n6smIvMcCg+wq1Oi75lYHVqlSpccV107hT3/2sOSmW/+UOhNM4ueCwO+bpRC7TJZR\nz1Eb8KL9AgMBAAECgf8tsQ3MBX9nu13PgIQP3NrVRjRtGnTR5D4d+sW5ZarXl5TI\n0i+yGAisnRHixPBByfQmsvRR02FDevxMBMeRU9tqQRhc8bcozZXXI86cg4eRZ+yk\naNuO+ovGdvBVV40v47gHujHlMvFzzztC+I968u+vEceugKjktFg/Ffuj1NC8eX0E\nTXz4s9kjkletWcwg0j3OMCt2IZd40PMv7ng9SZGhm0rpVJP2QcoLp7w9kyqPGNyb\nWKZaWar86jkN/JFR5+u2CH+CQI9IGU8pIKDXHao44T/ue2jttYljO5voRcM+IvOw\nEjZIwvWzzdVLOMPHBgKMLz/UdvUjfKGiETa/PvECgYEA8x1O6quJsPRl85OV0Wv7\nfYgkMNdRc6dplhILtJYQL11k32+lB7pFafkHFYGyefI9yi9K8JmRuc/rbhoqcDrn\n0NOAS0jV4znxIgSIFUp6HF3uYFvsNYj9h9oDNeQyrhhAe1lDzApGapgQJNp54jcE\nWMSxEm32tBpYnGtxmxXsDMUCgYEAwCf3YQ00P7b//znpnZHOgK/l7VI4GIAWDQvD\nmSQU7Pr8MhM9iKpIPaV7nWBPfSgummd1k9XGBlIcqdH2FyYLuKbX8tqSl8dNTff0\nHwFg/47Wwa2iPonlv8/+ZbE4HB/wTtdt8zQCdpsFbBtg6AC/2yOGfatttnmjBc01\n/EGvkNkCgYBMWbn9DR5TCo4yLvlwKb9zrxvekuCrt7n7PXObpT00Atq5KTDk+mTu\nYR0ObgsFLUSmiK+6XCBeAKRpkaIeWQGQnbu+6QLzN7E5A79RIHC1E/LXJEdMkNc+\noQM9G4unDUrC8kfOfrOaqmL3j/2TQ8ADuNH7fblq2pNVnJCzKfFWGQKBgQC2U/Xl\n7+p43oKvwVrLOXOxJbZM5mv1y2ug+12gbN0yM8CjHyCPEcw0OlY98QnbnwoBVlP5\nb6lTjAxIksIoGuCaWC2l8QGR5PmUFsdbuCo6s2VRJxlAsAYBaDFierLb9O5HUSCx\n2NLRiayudJgR68wf+eh+S/BxaZ9nPN2Rux4EmQKBgDJ8dxtVBQL4xL70eVtj+tbH\nJ6xfAk8mD0bZyoGCQ0hbBOLqEDAf/7KRyMCzYH3NAfSiNACHvLAUkmpMK0x38+r6\n/WEkvSEH/5jKv3qdLE8FMlzHtn4QHwll7G/eKPmj6JuSS4FTAH5IfbgXkfoyBse8\nf5fuBeLm0n8gAuqHnxCq\n-----END PRIVATE KEY-----\n",
+  "client_email": "vegas-marketing@vegas-marketing.iam.gserviceaccount.com",
+  "client_id": "101184647406162477939",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/vegas-marketing%40vegas-marketing.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
