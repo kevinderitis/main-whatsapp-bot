@@ -95,13 +95,13 @@ bot.onText(/\/lead (start|stop)/, async (msg, match) => {
     }
 });
 
-bot.on('message', (msg) => {
-    const chatId = msg.chat.id;
-    const messageText = msg.text;
-    if (!messageText.startsWith('/')) {
-        bot.sendMessage(chatId, "No reconozco ese comando. Usa /start, /number, /user <id>, /config, /stop <number>");
-    }
-});
+// bot.on('message', (msg) => {
+//     const chatId = msg.chat.id;
+//     const messageText = msg.text;
+//     if (!messageText.startsWith('/')) {
+//         bot.sendMessage(chatId, "No reconozco ese comando. Usa /start, /number, /user <id>, /config, /stop <number>");
+//     }
+// });
 
 bot.on('callback_query', (callbackQuery) => {
     const chatId = callbackQuery.message.chat.id;
