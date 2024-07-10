@@ -14,9 +14,9 @@ const formatDate = (date) => {
 };
 
 export const appendDataToSheet = async (spreadsheetId, values) => {
-    const client = await auth.getClient();
-    const range = 'Leads!A2';
     try {
+        const client = await auth.getClient();
+        const range = 'Leads!A2';
         await google.sheets('v4').spreadsheets.batchUpdate({
             spreadsheetId,
             resource: {
