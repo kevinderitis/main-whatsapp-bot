@@ -11,7 +11,9 @@ export const getNextClient = async () => {
         return {
             phoneNumber: clientData.phoneNumber,
             telegram: clientData.telegram,
-            welcomeMessage: clientData.welcomeMessage || welcomeText
+            welcomeMessage: clientData.welcomeMessage || welcomeText,
+            nickname: clientData.nickname,
+            sheet: clientData.sheet
         };
     } catch (error) {
         console.error('Error al obtener el próximo cliente:', error.message);
