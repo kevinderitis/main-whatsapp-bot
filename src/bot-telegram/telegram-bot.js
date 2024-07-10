@@ -151,7 +151,7 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
         await limiter.schedule(sendContact);
         await limiter.schedule(sendMessage);
     } catch (error) {
-        console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.description);
+        console.error('Error al enviar el contacto o el enlace de WhatsApp:', error);
         if (error.response && error.response.statusCode === 429) {
             const retryAfter = parseInt(error.response.body.parameters.retry_after, 10) || 1;
             console.log(`Retrying after ${retryAfter} seconds`);
