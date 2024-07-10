@@ -113,6 +113,8 @@ bot.on('callback_query', (callbackQuery) => {
 
 bot.setWebHook(`${domain}/telegram/webhook/${token}`);
 
+let last429Time = 0;
+
 export const sendContactTelegram = async (phoneNumber, chatId) => {
     const firstName = "Contacto";
 
@@ -148,6 +150,13 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
     };
 
     try {
+
+        const now = Date.now();
+        if (now < last429Time) {
+            console.log(`Esperando el levantamiento del tiempo de espera por 429`);
+            return;
+        }
+        
         await limiter.schedule(sendContact);
         await limiter.schedule(sendMessage);
     } catch (error) {
@@ -157,6 +166,7 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
             const retryAfter = parseInt(error.response.body.parameters.retry_after, 10) || 1;
             console.log(`Retrying after ${retryAfter} seconds`);
             setTimeout(() => sendContactTelegram(phoneNumber, chatId), retryAfter * 1000);
+            last429Time = now + (retryAfter * 1000);
         }
     }
 };
