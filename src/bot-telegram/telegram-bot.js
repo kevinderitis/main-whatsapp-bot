@@ -11,7 +11,7 @@ const domain = config.APP_DOMAIN;
 const bot = new TelegramBot(token, { polling: false });
 
 const limiter = new Bottleneck({
-    minTime: 1000,
+    minTime: 4000,
     maxConcurrent: 1,
 });
 
@@ -151,7 +151,8 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
         await limiter.schedule(sendContact);
         await limiter.schedule(sendMessage);
     } catch (error) {
-        console.error('Error al enviar el contacto o el enlace de WhatsApp:', error);
+        console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.statusCode);
+        console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.statusMessage);
         if (error.response && error.response.statusCode === 429) {
             const retryAfter = parseInt(error.response.body.parameters.retry_after, 10) || 1;
             console.log(`Retrying after ${retryAfter} seconds`);
