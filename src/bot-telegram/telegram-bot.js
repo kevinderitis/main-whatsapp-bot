@@ -114,7 +114,6 @@ bot.on('callback_query', (callbackQuery) => {
 bot.setWebHook(`${domain}/telegram/webhook/${token}`);
 
 let last429Time = 0;
-const now = Date.now();
 
 export const sendContactTelegram = async (phoneNumber, chatId) => {
     const firstName = "Contacto";
@@ -151,7 +150,7 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
     };
 
     try {
-
+        const now = Date.now();
         if (now < last429Time) {
             console.log(`Esperando el levantamiento del tiempo de espera por 429`);
             return;
@@ -160,6 +159,7 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
         await limiter.schedule(sendContact);
         await limiter.schedule(sendMessage);
     } catch (error) {
+        const now = Date.now();
         console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.statusCode);
         console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.statusMessage);
         if (error.response && error.response.statusCode === 429) {
