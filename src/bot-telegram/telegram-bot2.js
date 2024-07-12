@@ -4,15 +4,11 @@ import Bottleneck from 'bottleneck';
 import { setTelegramChatId, updateClientPhone, changeOrderState, getClientInfo } from '../services/clientServices.js';
 import { updateLeadByChatIdService } from '../services/leadServices.js';
 
-const mainToken = config.API_KEY_TELEGRAM;
-const secondaryTokens = [config.API_KEY_TELEGRAM_SENDER_1];
+const token = config.API_KEY_TELEGRAM;
 
-const mainBot = new TelegramBot(mainToken, { polling: false });
-const bots = secondaryTokens.map(token => new TelegramBot(token, { polling: false }));
-
-const activeBots = [...bots];
-const cooldownBots = [];
 const domain = config.APP_DOMAIN;
+
+const bot = new TelegramBot(token, { polling: false });
 
 const limiter = new Bottleneck({
     minTime: 4000,
@@ -21,9 +17,9 @@ const limiter = new Bottleneck({
 
 const welcomeMessage = 'Bienvenidos al bot de Vegas Marketing. Vas a poder recibir los leads y modificar la configuración de tu cuenta por este medio. Necesitas el ID de usuario que te proporcionamos para asociar esta cuenta de telegram a tu cuenta de Vegas Marketing.';
 
-mainBot.onText(/\/start/, (msg) => {
+bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
-    mainBot.sendMessage(chatId, welcomeMessage, {
+    bot.sendMessage(chatId, welcomeMessage, {
         reply_markup: {
             inline_keyboard: [
                 [
@@ -37,48 +33,48 @@ mainBot.onText(/\/start/, (msg) => {
     });
 });
 
-mainBot.onText(/\/info/, async (msg) => {
+bot.onText(/\/info/, async (msg) => {
     const chatId = msg.chat.id;
     try {
         let info = await getClientInfo(chatId);
         let phoneNumber = info ? info.phoneNumber : 'No configurado';
         let remainingLeads = info ? info.remainingLeads : 'No hay ordenes activas';
 
-        mainBot.sendMessage(chatId, `Numero de telefono configurado: ${phoneNumber}\nCantidad restante de leads: ${remainingLeads}`);
+        bot.sendMessage(chatId, `Numero de telefono configurado: ${phoneNumber}\nCantidad restante de leads: ${remainingLeads}`);
     } catch (error) {
         console.log(error);
-        mainBot.sendMessage(chatId, `Error al obtener info`);
+        bot.sendMessage(chatId, `Error al obtener info`);
     }
 });
 
-mainBot.onText(/\/number (\d+)/, async (msg, match) => {
+bot.onText(/\/number (\d+)/, async (msg, match) => {
     const chatId = msg.chat.id;
     const newNumber = msg.text.split(" ")[1];
     try {
         await updateClientPhone(chatId, newNumber);
-        mainBot.sendMessage(chatId, `Se cambio el numero de telefono: ${newNumber}`);
+        bot.sendMessage(chatId, `Se cambio el numero de telefono: ${newNumber}`);
     } catch (error) {
         console.log(error);
-        mainBot.sendMessage(chatId, `Error al actualizar el numero`);
+        bot.sendMessage(chatId, `Error al actualizar el numero`);
     }
 });
 
-mainBot.onText(/\/user (\d+)/, async (msg, match) => {
+bot.onText(/\/user (\d+)/, async (msg, match) => {
     const chatId = msg.chat.id;
     const userId = msg.text.split(" ")[1];
     try {
         await setTelegramChatId(chatId, userId);
-        mainBot.sendMessage(chatId, `Configuración para el usuario ID: ${userId}`);
+        bot.sendMessage(chatId, `Configuración para el usuario ID: ${userId}`);
     } catch (error) {
         console.log(error);
-        mainBot.sendMessage(chatId, `No se pudo crear la configuración, verifica tu ID de usuario.`);
+        bot.sendMessage(chatId, `No se pudo crear la configuración, verifica tu ID de usuario.`);
     }
 });
 
-mainBot.onText(/\/lead (start|stop)/, async (msg, match) => {
+bot.onText(/\/lead (start|stop)/, async (msg, match) => {
     const chatId = msg.chat.id;
     const command = msg.text.split(" ")[1];
-    console.log(command);
+    console.log(command)
     try {
         let message;
 
@@ -92,42 +88,37 @@ mainBot.onText(/\/lead (start|stop)/, async (msg, match) => {
             message = "El comando es desconocido, intenta con /lead stop o /lead start";
         }
 
-        mainBot.sendMessage(chatId, message);
+        bot.sendMessage(chatId, message);
     } catch (error) {
         console.log(error);
-        mainBot.sendMessage(chatId, `Hubo un error al ejecutar el comando.`);
+        bot.sendMessage(chatId, `Hubo un error al ejecutar el comando.`);
     }
 });
 
-mainBot.on('callback_query', (callbackQuery) => {
+// bot.on('message', (msg) => {
+//     const chatId = msg.chat.id;
+//     const messageText = msg.text;
+//     if (!messageText.startsWith('/')) {
+//         bot.sendMessage(chatId, "No reconozco ese comando. Usa /start, /number, /user <id>, /config, /stop <number>");
+//     }
+// });
+
+bot.on('callback_query', (callbackQuery) => {
     const chatId = callbackQuery.message.chat.id;
     const action = callbackQuery.data;
     if (action === 'aceptar') {
-        mainBot.sendMessage(chatId, 'Escribe /user seguido de tu ID para poder continuar con la configuración.\nPor ejemplo: /user 60d5f1234a4f123b5c6d7e8f');
+        bot.sendMessage(chatId, 'Escribe /user seguido de tu ID para poder continuar con la configuración.\nPor ejemplo: /user 60d5f1234a4f123b5c6d7e8f');
     }
 });
 
-mainBot.setWebHook(`${domain}/telegram/webhook/${mainToken}`);
+bot.setWebHook(`${domain}/telegram/webhook/${token}`);
 
-const getAvailableBot = () => {
-    if (activeBots.length > 0) {
-        return activeBots.shift();
-    }
-    return null;
-};
-
-const addBotToCooldown = (bot, cooldownTime) => {
-    cooldownBots.push(bot);
-    setTimeout(() => {
-        activeBots.push(bot);
-        cooldownBots.splice(cooldownBots.indexOf(bot), 1);
-    }, cooldownTime);
-};
+let last429Time = 0;
 
 export const sendContactTelegram = async (phoneNumber, chatId) => {
     const firstName = "Contacto";
 
-    const sendContact = async (bot) => {
+    const sendContact = async () => {
         try {
             await bot.sendContact(chatId, phoneNumber, firstName, {
                 vcard: `BEGIN:VCARD
@@ -141,9 +132,10 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
             console.log(error);
             throw error;
         }
+
     };
 
-    const sendMessage = async (bot) => {
+    const sendMessage = async () => {
         try {
             const whatsappLink = `https://api.whatsapp.com/send/?phone=${phoneNumber}`;
             const messageText = `Hablar por whatsapp ${phoneNumber}: [Contactar](${whatsappLink})`;
@@ -158,24 +150,48 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
     };
 
     try {
-        const bot = getAvailableBot();
-        if (!bot) {
-            console.log('No bots available, all are on cooldown.');
+        const now = Date.now();
+        if (now < last429Time) {
+            let waitingTime = last429Time - now;
+            console.log(`Esperando el levantamiento del tiempo de espera por 429: waiting time ${waitingTime}`);
             return;
         }
 
-        // await limiter.schedule(() => sendContact(bot));
-        await limiter.schedule(() => sendMessage(bot));
+        // await limiter.schedule(sendContact);
+        await limiter.schedule(sendMessage);
     } catch (error) {
+        const now = Date.now();
         console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.statusCode);
         console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.statusMessage);
         if (error.response && error.response.statusCode === 429) {
             const retryAfter = parseInt(error.response.body.parameters.retry_after, 10) || 1;
             console.log(`Retrying after ${retryAfter} seconds`);
-            addBotToCooldown(bot, retryAfter * 1000);
             setTimeout(() => sendContactTelegram(phoneNumber, chatId), retryAfter * 1000);
+            last429Time = now + (retryAfter * 1000);
         }
     }
 };
 
-export { mainBot, bots };
+// export const sendContactTelegram = (phoneNumber, chatId) => {
+//     const firstName = "Contacto";
+
+//     bot.sendContact(chatId, phoneNumber, firstName, {
+//         vcard: `BEGIN:VCARD
+//                 VERSION:3.0
+//                 FN:${firstName}
+//                 TEL;TYPE=CELL:${phoneNumber}
+//                 END:VCARD`
+//     });
+
+//     setTimeout(() => {
+//         const whatsappLink = `https://api.whatsapp.com/send/?phone=${phoneNumber}`;
+//         const messageText = `Hablar por whatsapp: [Contactar](${whatsappLink})`;
+
+//         bot.sendMessage(chatId, messageText, { parse_mode: 'Markdown' }).catch((error) => {
+//             console.error('Error al enviar el enlace de WhatsApp:', error);
+//         });
+//     }, 2000); 
+// };
+
+
+export { bot };

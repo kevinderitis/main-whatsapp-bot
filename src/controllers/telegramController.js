@@ -1,7 +1,8 @@
-import { bot } from '../bot-telegram/telegram-bot.js';
+// import { bot } from '../bot-telegram/telegram-bot.js';
+import { mainBot } from '../bot-telegram/telegram-bot.js';
 
 export const tgWebhook = (req, res) => {
     let body = req.body;
-    bot.processUpdate(body);
+    mainBot.processUpdate(body);
     res.sendStatus(200);
 }
