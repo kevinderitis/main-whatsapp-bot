@@ -5,7 +5,7 @@ import { setTelegramChatId, updateClientPhone, changeOrderState, getClientInfo }
 import { updateLeadByChatIdService } from '../services/leadServices.js';
 
 const mainToken = config.API_KEY_TELEGRAM;
-const secondaryTokens = [config.API_KEY_TELEGRAM_SENDER_1];
+const secondaryTokens = [config.API_KEY_TELEGRAM_SENDER_1, config.API_KEY_TELEGRAM_SENDER_2];
 
 const mainBot = new TelegramBot(mainToken, { polling: false });
 const bots = secondaryTokens.map(token => new TelegramBot(token, { polling: false }));
