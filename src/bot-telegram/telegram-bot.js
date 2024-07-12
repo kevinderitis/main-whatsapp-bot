@@ -159,6 +159,7 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
 
     try {
         const bot = getAvailableBot();
+        console.log(bot);
         if (!bot) {
             console.log('No bots available, all are on cooldown.');
             return;
@@ -167,8 +168,6 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
         // await limiter.schedule(() => sendContact(bot));
         await limiter.schedule(() => sendMessage(bot));
     } catch (error) {
-        console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.statusCode);
-        console.error('Error al enviar el contacto o el enlace de WhatsApp:', error.statusMessage);
         if (error.response && error.response.statusCode === 429) {
             const retryAfter = parseInt(error.response.body.parameters.retry_after, 10) || 1;
             console.log(`Retrying after ${retryAfter} seconds`);
