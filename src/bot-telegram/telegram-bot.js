@@ -152,7 +152,8 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
     try {
         const now = Date.now();
         if (now < last429Time) {
-            console.log(`Esperando el levantamiento del tiempo de espera por 429`);
+            let waitingTime = last429Time - now;
+            console.log(`Esperando el levantamiento del tiempo de espera por 429: waiting time ${waitingTime}`);
             return;
         }
 
