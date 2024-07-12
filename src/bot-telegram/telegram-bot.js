@@ -110,10 +110,14 @@ mainBot.on('callback_query', (callbackQuery) => {
 mainBot.setWebHook(`${domain}/telegram/webhook/${mainToken}`);
 
 const getAvailableBot = () => {
-    if (activeBots.length > 0) {
-        return activeBots.shift();
+    let bot = activeBots.find(bot => !cooldownBots.includes(bot));
+
+    if (bot) {
+        activeBots.splice(activeBots.indexOf(bot), 1);
+        activeBots.push(bot);
     }
-    return null;
+
+    return bot || null;
 };
 
 const addBotToCooldown = (bot, cooldownTime) => {
