@@ -163,13 +163,11 @@ export const sendContactTelegram = async (phoneNumber, chatId) => {
 
     try {
         const bot = getAvailableBot();
-        console.log(bot);
         if (!bot) {
             console.log('No bots available, all are on cooldown.');
             return;
         }
 
-        // await limiter.schedule(() => sendContact(bot));
         await limiter.schedule(() => sendMessage(bot));
     } catch (error) {
         if (error.response && error.response.statusCode === 429) {
